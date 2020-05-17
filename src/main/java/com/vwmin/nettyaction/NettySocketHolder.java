@@ -24,6 +24,11 @@ public class NettySocketHolder {
         MAP.entrySet().stream().filter(entry -> entry.getValue() == nioSocketChannel).forEach(entry -> MAP.remove(entry.getKey()));
     }
 
+    public static String getOnlineList(){
+        StringBuilder sb = new StringBuilder();
+        MAP.keySet().forEach((id) -> sb.append(id).append(";"));
+        return sb.substring(0, sb.length()-1);
+    }
 
     public static boolean contain(String id){
         return MAP.containsKey(id);

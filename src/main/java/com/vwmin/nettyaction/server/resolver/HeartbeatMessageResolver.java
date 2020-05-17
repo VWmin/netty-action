@@ -2,9 +2,7 @@ package com.vwmin.nettyaction.server.resolver;
 
 import com.vwmin.nettyaction.CustomProtocol;
 import com.vwmin.nettyaction.MessageType;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http2.Http2Connection;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
