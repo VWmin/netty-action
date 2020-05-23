@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+import static com.vwmin.nettyaction.server.resolver.LoginMessageResolver.online;
+
+
 @Slf4j
 public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomProtocol> {
 
@@ -20,6 +23,8 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         NettySocketHolder.remove((NioSocketChannel) ctx.channel());
+
+        NettySocketHolder.getMAP().forEach((key, val)->val.writeAndFlush(online(key)));
     }
 
     @Override
@@ -35,8 +40,8 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt ;
 
             if (idleStateEvent.state() == IdleState.READER_IDLE){
-                log.info("已经10秒没有收到来自心跳包，将释放链接");
-//                ctx.close();
+                log.info("已经10秒没有收到来自心跳包，将释放链接`{}`", ctx.channel().remoteAddress());
+                ctx.close();
             }
         }
         super.userEventTriggered(ctx, evt);
@@ -45,12 +50,8 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomProtocol msg) {
-        //保存客户端与 Channel 之间的关系
-        NettySocketHolder.put(msg.getId(), (NioSocketChannel)ctx.channel());
         Resolver resolver = resolverFactory.getMessageResolver(msg);
         resolver.resolve(ctx, msg);
-
-        String onlineList = NettySocketHolder.getOnlineList();
     }
 
     @Override
@@ -67,6 +68,7 @@ public class HeartBeatSimpleHandle extends SimpleChannelInboundHandler<CustomPro
         resolverFactory.registerResolver(new ChatMessageResolver());
         resolverFactory.registerResolver(new HeartbeatMessageResolver());
         resolverFactory.registerResolver(new LoginMessageResolver());
+        resolverFactory.registerResolver(new ResponseMessageResolver());
         super.channelRegistered(ctx);
     }
 }

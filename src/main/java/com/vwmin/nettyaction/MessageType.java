@@ -9,7 +9,9 @@ public enum MessageType {
     Heatbeat(1),
 
     /**表示数据类型是聊天*/
-    Chat(2);
+    Chat(2),
+
+    Response(3);
 
     private int value;
 

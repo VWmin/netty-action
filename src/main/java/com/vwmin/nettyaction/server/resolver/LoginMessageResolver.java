@@ -4,7 +4,9 @@ import com.vwmin.nettyaction.CustomProtocol;
 import com.vwmin.nettyaction.MessageType;
 import com.vwmin.nettyaction.NettySocketHolder;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 public class LoginMessageResolver implements Resolver {
@@ -17,14 +19,17 @@ public class LoginMessageResolver implements Resolver {
 
     @Override
     public void resolve(ChannelHandlerContext ctx, CustomProtocol message) {
-        log.info("收到来自客户端'{}'的在线查询", message.getId());
-        ctx.writeAndFlush(online());
+        //保存客户端与 Channel 之间的关系
+        NettySocketHolder.put(ctx.channel().remoteAddress()+"", (NioSocketChannel)ctx.channel());
+
+        NettySocketHolder.getMAP().forEach((key, val) -> val.writeAndFlush(online(key)));
     }
 
-    private static CustomProtocol online(){
+    public static CustomProtocol online(String addr){
         CustomProtocol online = new CustomProtocol();
         online.setType(MessageType.Login.value());
         online.setId("这是一个牛逼的ServerID");
+        online.setTo(addr);
         online.setContent(NettySocketHolder.getOnlineList());
         return online;
     }
