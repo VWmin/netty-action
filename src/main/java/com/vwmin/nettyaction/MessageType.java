@@ -6,7 +6,7 @@ public enum MessageType {
     Login(0),
 
     /** 表示数据类型是心跳包*/
-    Heatbeat(1),
+    Heartbeat(1),
 
     /**表示数据类型是聊天*/
     Chat(2),

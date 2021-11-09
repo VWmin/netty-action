@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HeartbeatMessageResolver implements Resolver {
 
-    private static final MessageType SUPPORT_MESSAGE_TYPE = MessageType.Heatbeat;
+    private static final MessageType SUPPORT_MESSAGE_TYPE = MessageType.Heartbeat;
     private static final CustomProtocol PONG = pong();
 
     @Override
@@ -25,7 +25,7 @@ public class HeartbeatMessageResolver implements Resolver {
     private static CustomProtocol pong(){
         CustomProtocol pong = new CustomProtocol();
         pong.setId("这是一个牛逼的ServerID");
-        pong.setType(MessageType.Heatbeat.value());
+        pong.setType(MessageType.Heartbeat.value());
         pong.setContent("pong");
         return pong;
     }

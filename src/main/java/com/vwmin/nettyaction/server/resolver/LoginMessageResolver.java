@@ -25,11 +25,11 @@ public class LoginMessageResolver implements Resolver {
         NettySocketHolder.getMAP().forEach((key, val) -> val.writeAndFlush(online(key)));
     }
 
-    public static CustomProtocol online(String addr){
+    public static CustomProtocol online(String id){
         CustomProtocol online = new CustomProtocol();
         online.setType(MessageType.Login.value());
         online.setId("这是一个牛逼的ServerID");
-        online.setTo(addr);
+        online.setTo(id);
         online.setContent(NettySocketHolder.getOnlineList());
         return online;
     }
